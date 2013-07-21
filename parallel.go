@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/koron/jvgrep/mmap"
 	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
+	"time"
 )
 
 const (
@@ -106,13 +108,36 @@ func benchmark(f func() (int, error), s string) {
 	}
 }
 
+// be not used now.
+func fullBench() {
+	warmup(sequentialRead, "sequential")
+	warmup(parallelRead, "parallel")
+	benchmark(sequentialRead, "sequential")
+	benchmark(parallelRead, "parallel")
+}
+
+func simpleBenchmark(f func() (int, error), s string) {
+	log.Println("simple benchmark:", s)
+	t := time.Now()
+	cnt, _ := f()
+	d := time.Since(t)
+	log.Println("   count=", cnt)
+	log.Println("  duration=", d)
+}
+
 func main() {
 	err := prepareBigFile()
 	if err != nil {
 		log.Fatal(err)
 	}
-	warmup(sequentialRead, "sequential")
-	warmup(parallelRead, "parallel")
-	benchmark(sequentialRead, "sequential")
-	benchmark(parallelRead, "parallel")
+	if len(os.Args) == 2 {
+		if os.Args[1] == "sequential" {
+			simpleBenchmark(sequentialRead, "sequential")
+			return
+		} else if os.Args[1] == "parallel" {
+			simpleBenchmark(parallelRead, "parallel")
+			return
+		}
+	}
+	fmt.Println("USAGE: go run parallel.go {sequential|parallel}")
 }
