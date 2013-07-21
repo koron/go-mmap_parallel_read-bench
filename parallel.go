@@ -87,6 +87,14 @@ func parallelRead() (int, error) {
 	return cnt, nil
 }
 
+func memoryRead() (int, error) {
+	b, err := ioutil.ReadFile(bigFile)
+	if err != nil {
+		return 0, err
+	}
+	return countZero(b), nil
+}
+
 func warmup(f func() (int, error), s string) {
 	log.Println("warming up:", s)
 	for i := 0; i < 5; i++ {
@@ -121,8 +129,8 @@ func simpleBenchmark(f func() (int, error), s string) {
 	t := time.Now()
 	cnt, _ := f()
 	d := time.Since(t)
-	log.Println("   count=", cnt)
-	log.Println("  duration=", d)
+	log.Println("   count:", cnt)
+	log.Println("  duration:", d)
 }
 
 func main() {
@@ -136,6 +144,9 @@ func main() {
 			return
 		} else if os.Args[1] == "parallel" {
 			simpleBenchmark(parallelRead, "parallel")
+			return
+		} else if os.Args[1] == "memory" {
+			simpleBenchmark(memoryRead, "memory")
 			return
 		}
 	}
