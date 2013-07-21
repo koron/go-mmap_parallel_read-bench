@@ -1,1 +1,13 @@
-# Parallel accessing with mmap benchmark.
+# mmap parallel read benchmark
+
+mmap したファイルを領域分割して並列に処理すると速いと聞いたので試してみる。
+
+## 使い方
+
+事前に mmap モジュールを使えるようにしておく。
+
+    $ go get github.com/koron/jvgrep
+
+ベンチマーク実行
+
+    $ go run parallel.go
