@@ -51,7 +51,7 @@ func countZero(b []byte) int {
 }
 
 func sequentialRead() (int, error) {
-	mf, err := mmap.OpenMemfile(bigFile)
+	mf, err := mmap.Open(bigFile)
 	if err != nil {
 		return 0, err
 	}
@@ -61,7 +61,7 @@ func sequentialRead() (int, error) {
 }
 
 func parallelRead() (int, error) {
-	mf, err := mmap.OpenMemfile(bigFile)
+	mf, err := mmap.Open(bigFile)
 	if err != nil {
 		return 0, err
 	}
